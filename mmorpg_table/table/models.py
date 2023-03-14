@@ -3,19 +3,31 @@ from django.db import models
 
 class Users(models.Model):
     """Класс Users для создания экземпляров пользователей портала"""
-    pass
+    last_name = models.CharField(max_length=30)                                         # Фамилия
+    name = models.CharField(max_length=30)                                              # Имя
+    surname = models.CharField(max_length=40, blank=True)                               # Отчество (может не быть)
+    login = models.CharField(max_length=40)                                             # Логин
+    mail = models.EmailField()                                                          # Эл.почта
+    date_time_registration = models.DateTimeField(auto_now_add=True)                    # Дата и время регистрации
+
+
+class Categories(models.Model):
+    """Класс Categories для создания экземпляров категорий, к которым относятся объявления"""
+    categories = models.CharField(max_length=30)                                        # Категория (10 шт)
 
 
 class Ads(models.Model):
     """Класс Ads для создания экземпляров объявлений"""
-    pass
+    date_time_generation = models.DateTimeField(auto_now_add=True)                      # Дата и время создания
+    header = models.CharField(max_length=250)                                           # Заголовок
+    text_and_multimedia = models.TextField()                           # !!!!! Требуется замена на WYSIWYG - поле
+    id_users = models.ForeignKey(Users, on_delete=models.CASCADE)                       # id автора объявления
+    id_categories = models.ForeignKey(Categories, on_delete=models.CASCADE)             # id категории объявления
 
 
 class Reviews(models.Model):
-    """Класс Reviews для создания откликов пользователей на объявления"""
-    pass
-
-
-class Categories(models.Model):
-    """Класс Categories для создания категорий, к которым относятся объявления"""
-    pass
+    """Класс Reviews для создания экземпляров откликов пользователей на объявления"""
+    text = models.TextField()                                                           # текст комментария
+    id_users_rev = models.ForeignKey(Users, on_delete=models.CASCADE)                   # id автора комментария
+    id_ads = models.ForeignKey(Ads, on_delete=models.CASCADE)                           # id статьи
+    rev_status = models.BooleanField(default=False)                                     # принят или нет отзыв
